@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ArticleIdRouteImport } from './routes/article.$id'
@@ -17,6 +18,11 @@ import { Route as ArticleIdRouteImport } from './routes/article.$id'
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const ArticleIdRoute = ArticleIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/search': typeof SearchRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/search': typeof SearchRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/search': typeof SearchRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/article/$id' | '/category/$slug'
+  fullPaths: '/' | '/about' | '/search' | '/article/$id' | '/category/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/article/$id' | '/category/$slug'
-  id: '__root__' | '/' | '/search' | '/article/$id' | '/category/$slug'
+  to: '/' | '/about' | '/search' | '/article/$id' | '/category/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/search'
+    | '/article/$id'
+    | '/category/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   SearchRoute: typeof SearchRoute
   ArticleIdRoute: typeof ArticleIdRoute
   CategorySlugRoute: typeof CategorySlugRoute
@@ -76,6 +92,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   SearchRoute: SearchRoute,
   ArticleIdRoute: ArticleIdRoute,
   CategorySlugRoute: CategorySlugRoute,
