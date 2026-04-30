@@ -15,17 +15,14 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/search")({
   validateSearch: searchSchema,
-  head: ({ search }) => {
-    const title = search.q ? `Search: ${search.q} — NEWS POINT` : "Search news — NEWS POINT";
-    return {
-      meta: [
-        { title },
-        { name: "description", content: "Search live news from across the web." },
-        { property: "og:title", content: title },
-        { property: "og:description", content: "Search live news from across the web." },
-      ],
-    };
-  },
+  head: () => ({
+    meta: [
+      { title: "Search news — NEWS POINT" },
+      { name: "description", content: "Search live news from across the web." },
+      { property: "og:title", content: "Search news — NEWS POINT" },
+      { property: "og:description", content: "Search live news from across the web." },
+    ],
+  }),
   component: SearchPage,
 });
 
