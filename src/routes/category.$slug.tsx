@@ -19,16 +19,13 @@ export const Route = createFileRoute("/category/$slug")({
       ],
     };
   },
-  beforeLoad: ({ params }): never | undefined => {
-    if (!CATEGORIES.find((c) => c.slug === params.slug)) throw notFound();
-    return undefined;
-  },
   component: CategoryPage,
 });
 
 function CategoryPage() {
   const { slug } = Route.useParams();
-  const cat = CATEGORIES.find((c) => c.slug === slug)!;
+  const cat = CATEGORIES.find((c) => c.slug === slug);
+  if (!cat) throw notFound();
   const q = useQuery({
     queryKey: ["headlines", "us", slug],
     queryFn: () => getTopHeadlines({ data: { country: "us", category: slug, pageSize: 40 } }),
