@@ -139,9 +139,14 @@ export function SiteFooter() {
             </div>
             <p className="mt-2 text-sm opacity-80">Live breaking news from around the world.</p>
           </div>
-          <p className="text-xs opacity-70">
-            © {new Date().getFullYear()} NEWS POINT. Powered by NewsAPI.
-          </p>
+        <div className="flex flex-col items-start md:items-end gap-2 text-xs opacity-80">
+          <div className="flex items-center gap-3">
+            <a href="/api/public/rss.xml" className="hover:text-primary">RSS</a>
+            <a href="/api/public/sitemap.xml" className="hover:text-primary">Sitemap</a>
+            <Link to="/about" className="hover:text-primary">About</Link>
+          </div>
+          <p className="opacity-80">© {new Date().getFullYear()} NEWS POINT. Powered by NewsAPI.</p>
+        </div>
         </div>
       </div>
     </footer>
