@@ -38,3 +38,123 @@ export const CATEGORIES = [
   { slug: "health", name: "Health" },
   { slug: "science", name: "Science" },
 ] as const;
+
+/* ---------- Regions ---------- */
+
+export const COUNTRIES = [
+  { code: "in", name: "India", flag: "🇮🇳" },
+  { code: "us", name: "United States", flag: "🇺🇸" },
+  { code: "gb", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "ca", name: "Canada", flag: "🇨🇦" },
+  { code: "au", name: "Australia", flag: "🇦🇺" },
+  { code: "ae", name: "UAE", flag: "🇦🇪" },
+  { code: "sg", name: "Singapore", flag: "🇸🇬" },
+  { code: "de", name: "Germany", flag: "🇩🇪" },
+  { code: "fr", name: "France", flag: "🇫🇷" },
+  { code: "jp", name: "Japan", flag: "🇯🇵" },
+  { code: "cn", name: "China", flag: "🇨🇳" },
+  { code: "br", name: "Brazil", flag: "🇧🇷" },
+  { code: "za", name: "South Africa", flag: "🇿🇦" },
+] as const;
+
+export const INDIAN_STATES = [
+  "All India",
+  "Andhra Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa",
+  "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+  "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
+  "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+  "West Bengal", "Jammu and Kashmir", "Ladakh",
+  "Mumbai", "Bengaluru", "Hyderabad", "Chennai", "Kolkata", "Pune",
+] as const;
+
+/* ---------- Local storage keys ---------- */
+const LS = {
+  region: "np:region",
+  state: "np:in-state",
+  theme: "np:theme",
+  ticker: "np:ticker-interval",
+  bookmarks: "np:bookmarks",
+  filters: "np:filters",
+  reader: "np:reader-mode",
+} as const;
+
+export function lsGet<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const v = window.localStorage.getItem(key);
+    return v ? (JSON.parse(v) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+export function lsSet(key: string, value: unknown) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
+
+export const STORAGE_KEYS = LS;
+
+/* ---------- Bookmarks ---------- */
+export interface Bookmark {
+  url: string;
+  title: string;
+  description: string | null;
+  urlToImage: string | null;
+  source: string;
+  publishedAt: string;
+  savedAt: string;
+}
+export function getBookmarks(): Bookmark[] {
+  return lsGet<Bookmark[]>(LS.bookmarks, []);
+}
+export function isBookmarked(url: string): boolean {
+  return getBookmarks().some((b) => b.url === url);
+}
+export function toggleBookmark(b: Omit<Bookmark, "savedAt">): boolean {
+  const list = getBookmarks();
+  const existing = list.findIndex((x) => x.url === b.url);
+  if (existing >= 0) {
+    list.splice(existing, 1);
+    lsSet(LS.bookmarks, list);
+    window.dispatchEvent(new Event("np:bookmarks"));
+    return false;
+  }
+  list.unshift({ ...b, savedAt: new Date().toISOString() });
+  lsSet(LS.bookmarks, list);
+  window.dispatchEvent(new Event("np:bookmarks"));
+  return true;
+}
+
+/* ---------- Content filters ---------- */
+export interface FilterPrefs {
+  blockedKeywords: string[];
+  blockedCategories: string[];
+}
+export function getFilters(): FilterPrefs {
+  return lsGet<FilterPrefs>(LS.filters, { blockedKeywords: [], blockedCategories: [] });
+}
+export function setFilters(f: FilterPrefs) {
+  lsSet(LS.filters, f);
+  window.dispatchEvent(new Event("np:filters"));
+}
+export function applyFilters<T extends { title: string; description: string | null; source: { name: string } }>(
+  list: T[],
+  filters: FilterPrefs,
+): T[] {
+  if (!filters.blockedKeywords.length) return list;
+  const kws = filters.blockedKeywords.map((k) => k.toLowerCase());
+  return list.filter((a) => {
+    const blob = `${a.title} ${a.description ?? ""} ${a.source.name}`.toLowerCase();
+    return !kws.some((k) => k && blob.includes(k));
+  });
+}
+
+/* ---------- Reading time ---------- */
+export function readingTime(text: string | null | undefined): number {
+  if (!text) return 1;
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 220));
+}
