@@ -132,39 +132,67 @@
   animation: live-pulse 1.2s ease-in-out infinite;
 }
 
+/* Reader (extracted article) typography */
+.np-reader p { margin: 1em 0; line-height: 1.75; font-size: 1.0625rem; }
+.np-reader h1, .np-reader h2, .np-reader h3, .np-reader h4 {
+  font-family: var(--font-display);
+  margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.2;
+}
+.np-reader h2 { font-size: 1.75rem; }
+.np-reader h3 { font-size: 1.4rem; }
+.np-reader a { color: var(--primary); text-decoration: underline; }
+.np-reader img, .np-reader figure { margin: 1.25em 0; max-width: 100%; height: auto; }
+.np-reader figure figcaption { font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.4em; }
+.np-reader blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 0.4em 1em; margin: 1.25em 0; color: var(--muted-foreground); font-style: italic;
+}
+.np-reader ul, .np-reader ol { margin: 1em 0 1em 1.5em; }
+.np-reader ul { list-style: disc; }
+.np-reader ol { list-style: decimal; }
+.np-reader li { margin: 0.4em 0; }
+.np-reader code { background: var(--muted); padding: 0.1em 0.3em; border-radius: 2px; font-size: 0.9em; }
+.np-reader pre { background: var(--muted); padding: 1em; overflow-x: auto; margin: 1em 0; }
+.np-reader hr { border: 0; border-top: 1px solid var(--border); margin: 2em 0; }
+
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
+  /* NEWS POINT — Bold Breaking News (dark) */
+  --background: oklch(0.16 0.02 256);
+  --foreground: oklch(0.97 0.005 250);
+  --card: oklch(0.21 0.025 256);
+  --card-foreground: oklch(0.97 0.005 250);
+  --popover: oklch(0.21 0.025 256);
+  --popover-foreground: oklch(0.97 0.005 250);
+  /* Keep urgent red as primary in dark */
+  --primary: oklch(0.66 0.21 22);
+  --primary-foreground: oklch(1 0 0);
+  /* Lighter navy for surfaces */
+  --secondary: oklch(0.42 0.07 256);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.24 0.025 256);
+  --muted-foreground: oklch(0.72 0.02 256);
+  --accent: oklch(0.42 0.07 256);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.66 0.21 22);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
+  --ring: oklch(0.66 0.21 22);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar: oklch(0.21 0.025 256);
   --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: oklch(0.66 0.21 22);
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
   --sidebar-accent: oklch(0.279 0.041 260.031);
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  --brand-red: oklch(0.66 0.21 22);
+  --brand-navy: oklch(0.42 0.07 256);
 }
 
 @layer base {

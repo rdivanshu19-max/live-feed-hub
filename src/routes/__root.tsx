@@ -2,6 +2,8 @@ import { Outlet, Link, createRootRouteWithContext, HeadContent, Scripts } from "
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
+import { ThemeProvider } from "../components/news/ThemeProvider";
+import { RegionProvider } from "../components/news/RegionProvider";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -61,6 +63,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script
+          // Avoid theme flash on first paint
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('np:theme');var t=s?JSON.parse(s):(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');document.documentElement.style.colorScheme=t;}catch(e){}})();`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>
@@ -75,7 +83,11 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <ThemeProvider>
+        <RegionProvider>
+          <Outlet />
+        </RegionProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

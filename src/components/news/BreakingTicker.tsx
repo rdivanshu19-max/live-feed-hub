@@ -1,16 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { getTopHeadlines } from "../../server/news.functions";
-import { encodeArticleId } from "./utils";
+import { applyFilters, encodeArticleId } from "./utils";
+import { useTickerInterval } from "./TickerControl";
+import { useFilters } from "./useFilters";
+import { useRegion } from "./RegionProvider";
 
 export function BreakingTicker() {
+  const { country } = useRegion();
+  const [interval] = useTickerInterval();
+  const filters = useFilters();
   const { data } = useQuery({
-    queryKey: ["ticker"],
-    queryFn: () => getTopHeadlines({ data: { country: "us", pageSize: 15 } }),
-    refetchInterval: 60_000,
+    queryKey: ["ticker", country],
+    queryFn: () => getTopHeadlines({ data: { country, pageSize: 20 } }),
+    refetchInterval: interval > 0 ? interval * 1000 : false,
   });
 
-  const items = data?.articles ?? [];
+  const items = applyFilters(data?.articles ?? [], filters).slice(0, 15);
   if (items.length === 0) return null;
 
   const loop = [...items, ...items];

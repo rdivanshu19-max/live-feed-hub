@@ -3,7 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getTopHeadlines } from "../server/news.functions";
 import { SiteHeader, SiteFooter } from "../components/news/SiteHeader";
 import { ArticleCard, ArticleCardSkeleton } from "../components/news/ArticleCard";
-import { CATEGORIES } from "../components/news/utils";
+import { applyFilters, CATEGORIES, COUNTRIES } from "../components/news/utils";
+import { useRegion } from "../components/news/RegionProvider";
+import { useFilters } from "../components/news/useFilters";
+import { useTickerInterval } from "../components/news/TickerControl";
 
 export const Route = createFileRoute("/category/$slug")({
   head: ({ params }) => {
@@ -26,13 +29,17 @@ function CategoryPage() {
   const { slug } = Route.useParams();
   const cat = CATEGORIES.find((c) => c.slug === slug);
   if (!cat) throw notFound();
+  const { country } = useRegion();
+  const filters = useFilters();
+  const [interval] = useTickerInterval();
   const q = useQuery({
-    queryKey: ["headlines", "us", slug],
-    queryFn: () => getTopHeadlines({ data: { country: "us", category: slug, pageSize: 40 } }),
-    refetchInterval: 60_000,
+    queryKey: ["headlines", country, slug],
+    queryFn: () => getTopHeadlines({ data: { country, category: slug, pageSize: 40 } }),
+    refetchInterval: interval > 0 ? interval * 1000 : false,
   });
 
-  const articles = q.data?.articles ?? [];
+  const articles = applyFilters(q.data?.articles ?? [], filters);
+  const countryName = COUNTRIES.find((c) => c.code === country)?.name ?? country.toUpperCase();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -42,7 +49,7 @@ function CategoryPage() {
           <p className="text-xs uppercase tracking-widest text-primary font-bold">Category</p>
           <h1 className="font-display text-5xl mt-1">{cat.name}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Live {cat.name.toLowerCase()} headlines · refreshes every 60s
+            Live {cat.name.toLowerCase()} headlines from {countryName} · {interval === 0 ? "auto-refresh off" : `refreshes every ${interval}s`}
           </p>
         </header>
 

@@ -6,6 +6,8 @@ import { Search } from "lucide-react";
 import { searchNews } from "../server/news.functions";
 import { SiteHeader, SiteFooter } from "../components/news/SiteHeader";
 import { ArticleCard, ArticleCardSkeleton } from "../components/news/ArticleCard";
+import { applyFilters } from "../components/news/utils";
+import { useFilters } from "../components/news/useFilters";
 
 const searchSchema = z.object({
   q: z.string().optional().default(""),
@@ -42,6 +44,7 @@ function SearchPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const [input, setInput] = useState(search.q);
+  const filters = useFilters();
 
   const q = useQuery({
     queryKey: ["search", search.q, search.language, search.sortBy],
@@ -52,7 +55,7 @@ function SearchPage() {
     enabled: !!search.q,
   });
 
-  const articles = q.data?.articles ?? [];
+  const articles = applyFilters(q.data?.articles ?? [], filters);
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
