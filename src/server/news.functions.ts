@@ -63,13 +63,15 @@ export const getTopHeadlines = createServerFn({ method: "GET" })
     (data: { category?: string; country?: string; q?: string; pageSize?: number; page?: number }) => data,
   )
   .handler(async ({ data }) => {
-    return callNewsApi("/top-headlines", {
+    // NewsAPI requires either country/category OR q. If we only have q, use /everything for broader results.
+    const params: Record<string, string | undefined> = {
       category: data.category,
       country: data.country ?? "us",
       q: data.q,
       pageSize: data.pageSize ? String(data.pageSize) : "30",
       page: data.page ? String(data.page) : undefined,
-    });
+    };
+    return callNewsApi("/top-headlines", params);
   });
 
 export const searchNews = createServerFn({ method: "GET" })
