@@ -15,7 +15,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ArticleIdRouteImport } from './routes/article.$id'
-import { Route as ArticleRouteImport } from './routes/article.'
 
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
@@ -47,18 +46,12 @@ const ArticleIdRoute = ArticleIdRouteImport.update({
   path: '/article/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticleRoute = ArticleRouteImport.update({
-  id: '/article/',
-  path: '/article/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/bookmarks': typeof BookmarksRoute
   '/search': typeof SearchRoute
-  '/article/': typeof ArticleRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
 }
@@ -67,7 +60,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/bookmarks': typeof BookmarksRoute
   '/search': typeof SearchRoute
-  '/article': typeof ArticleRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
 }
@@ -77,7 +69,6 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/bookmarks': typeof BookmarksRoute
   '/search': typeof SearchRoute
-  '/article/': typeof ArticleRoute
   '/article/$id': typeof ArticleIdRoute
   '/category/$slug': typeof CategorySlugRoute
 }
@@ -88,7 +79,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/bookmarks'
     | '/search'
-    | '/article/'
     | '/article/$id'
     | '/category/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -97,7 +87,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/bookmarks'
     | '/search'
-    | '/article'
     | '/article/$id'
     | '/category/$slug'
   id:
@@ -106,7 +95,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/bookmarks'
     | '/search'
-    | '/article/'
     | '/article/$id'
     | '/category/$slug'
   fileRoutesById: FileRoutesById
@@ -116,7 +104,6 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BookmarksRoute: typeof BookmarksRoute
   SearchRoute: typeof SearchRoute
-  ArticleRoute: typeof ArticleRoute
   ArticleIdRoute: typeof ArticleIdRoute
   CategorySlugRoute: typeof CategorySlugRoute
 }
@@ -165,13 +152,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArticleIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/article/': {
-      id: '/article/'
-      path: '/article'
-      fullPath: '/article/'
-      preLoaderRoute: typeof ArticleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -180,10 +160,18 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BookmarksRoute: BookmarksRoute,
   SearchRoute: SearchRoute,
-  ArticleRoute: ArticleRoute,
   ArticleIdRoute: ArticleIdRoute,
   CategorySlugRoute: CategorySlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
