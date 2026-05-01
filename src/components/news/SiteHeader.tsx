@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Menu, X } from "lucide-react";
+import { Search, Menu, X, Bookmark } from "lucide-react";
 import { CATEGORIES } from "./utils";
+import { ThemeToggle } from "./ThemeToggle";
+import { RegionPicker } from "./RegionPicker";
+import { FilterDialog } from "./FilterDialog";
 
 export function SiteHeader() {
   const navigate = useNavigate();
@@ -19,9 +22,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
       <div className="border-b border-border bg-secondary text-secondary-foreground">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-xs">
-          <span className="font-semibold tracking-wider">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
-          <span className="hidden sm:inline opacity-80">Live updates every 60 seconds</span>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-xs gap-3">
+          <span className="font-semibold tracking-wider whitespace-nowrap">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
+          <span className="hidden md:inline opacity-80">Live updates · global newsroom</span>
         </div>
       </div>
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
@@ -38,6 +41,16 @@ export function SiteHeader() {
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
         </form>
+        <div className="hidden md:flex items-center gap-2">
+          <Link
+            to="/bookmarks"
+            aria-label="Bookmarks"
+            className="inline-flex h-9 w-9 items-center justify-center border border-border hover:bg-muted transition-colors"
+          >
+            <Bookmark className="h-4 w-4" />
+          </Link>
+          <ThemeToggle />
+        </div>
         <button
           aria-label="Menu"
           className="md:hidden p-2"
@@ -45,6 +58,12 @@ export function SiteHeader() {
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
+      </div>
+      <div className="hidden md:block border-t border-border bg-muted/40">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 flex-wrap">
+          <RegionPicker />
+          <FilterDialog />
+        </div>
       </div>
       <nav className="hidden md:block border-t border-border">
         <div className="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-4">
@@ -78,6 +97,13 @@ export function SiteHeader() {
               className="flex-1 bg-transparent text-sm outline-none"
             />
           </form>
+          <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3 flex-wrap">
+            <RegionPicker />
+            <div className="flex items-center gap-2">
+              <FilterDialog />
+              <ThemeToggle />
+            </div>
+          </div>
           <div className="flex flex-col">
             {CATEGORIES.map((c) => (
               <Link
@@ -90,6 +116,9 @@ export function SiteHeader() {
                 {c.name}
               </Link>
             ))}
+            <Link to="/bookmarks" onClick={() => setOpen(false)} className="border-b border-border px-4 py-3 text-sm font-bold uppercase tracking-wide">
+              Bookmarks
+            </Link>
             <Link to="/about" onClick={() => setOpen(false)} className="px-4 py-3 text-sm font-bold uppercase">About</Link>
           </div>
         </div>
