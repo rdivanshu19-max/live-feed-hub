@@ -12,7 +12,7 @@ import { decodeArticleId, FALLBACK_IMAGE, lsGet, lsSet, readingTime, STORAGE_KEY
 
 type ReaderMode = "rich" | "extracted" | "iframe";
 
-export const Route = createFileRoute("/article/$id")({
+export const Route = createFileRoute("/article/")({
   head: ({ params }) => {
     let url = "";
     try { url = decodeArticleId(params.id); } catch {}

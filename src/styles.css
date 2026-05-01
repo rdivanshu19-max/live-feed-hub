@@ -132,6 +132,29 @@
   animation: live-pulse 1.2s ease-in-out infinite;
 }
 
+/* Reader (extracted article) typography */
+.np-reader p { margin: 1em 0; line-height: 1.75; font-size: 1.0625rem; }
+.np-reader h1, .np-reader h2, .np-reader h3, .np-reader h4 {
+  font-family: var(--font-display);
+  margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.2;
+}
+.np-reader h2 { font-size: 1.75rem; }
+.np-reader h3 { font-size: 1.4rem; }
+.np-reader a { color: var(--primary); text-decoration: underline; }
+.np-reader img, .np-reader figure { margin: 1.25em 0; max-width: 100%; height: auto; }
+.np-reader figure figcaption { font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.4em; }
+.np-reader blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 0.4em 1em; margin: 1.25em 0; color: var(--muted-foreground); font-style: italic;
+}
+.np-reader ul, .np-reader ol { margin: 1em 0 1em 1.5em; }
+.np-reader ul { list-style: disc; }
+.np-reader ol { list-style: decimal; }
+.np-reader li { margin: 0.4em 0; }
+.np-reader code { background: var(--muted); padding: 0.1em 0.3em; border-radius: 2px; font-size: 0.9em; }
+.np-reader pre { background: var(--muted); padding: 1em; overflow-x: auto; margin: 1em 0; }
+.np-reader hr { border: 0; border-top: 1px solid var(--border); margin: 2em 0; }
+
 .dark {
   /* NEWS POINT — Bold Breaking News (dark) */
   --background: oklch(0.16 0.02 256);
